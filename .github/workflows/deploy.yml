@@ -4,7 +4,7 @@ name: Deploy PHP POS to aaPanel
 # Triggers the workflow on push events but only for the main branch.
 on:
   push:
-    branches: [ main ] # Adjust if you use a different deployment branch (e.g., master)
+    branches: [main] # Adjust if you use a different deployment branch (e.g., master)
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -38,16 +38,15 @@ jobs:
           # If you stored the full key line in secrets, use this instead:
           # echo "${{ secrets.SERVER_HOST_KEY }}" >> ~/.ssh/known_hosts
 
-
       # 4. Deploy files using rsync over SSH
       - name: Deploy files via rsync
         run: |
           rsync -avz --delete \
-          --exclude='.git/' \
-          --exclude='.github/' \
+          --exclude='./git/' \
+          --exclude='./github/' \
           --exclude='deploy.yml' \
-          --exclude='.env' \
-          --exclude='/data/sales_*.json' \  
+          --exclude='./env' \
+          --exclude='./data/sales_*.json' \  
           ./ ${{ secrets.SSH_USERNAME }}@${{ secrets.SERVER_IP }}:${{ secrets.DEPLOY_PATH }}
 
       # 5. Set permissions on the server
