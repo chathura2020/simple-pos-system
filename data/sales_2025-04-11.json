@@ -1,0 +1,46 @@
+[
+    {
+        "transaction_id": "20250411-075953-3764",
+        "timestamp": "2025-04-11T07:59:53+05:30",
+        "items": [
+            {
+                "sku": "sku1000",
+                "name": "White Suger 500g",
+                "quantity": 2,
+                "price_at_sale": 800
+            },
+            {
+                "sku": "sku1001",
+                "name": "Brown suger 1kg",
+                "quantity": 3,
+                "price_at_sale": 1400
+            }
+        ],
+        "subtotal": 5800,
+        "tax_amount": 0,
+        "total_amount": 5800,
+        "payment_method": "Cash"
+    },
+    {
+        "transaction_id": "20250411-080234-7113",
+        "timestamp": "2025-04-11T08:02:34+05:30",
+        "items": [
+            {
+                "sku": "sku1000",
+                "name": "White Suger 500g",
+                "quantity": 1,
+                "price_at_sale": 800
+            },
+            {
+                "sku": "sku1001",
+                "name": "Brown suger 1kg",
+                "quantity": 2,
+                "price_at_sale": 1400
+            }
+        ],
+        "subtotal": 3600,
+        "tax_amount": 0,
+        "total_amount": 3600,
+        "payment_method": "Cash"
+    }
+]

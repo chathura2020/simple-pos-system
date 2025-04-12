@@ -1,0 +1,14 @@
+[
+    {
+        "sku": "sku1000",
+        "name": "White Suger 500g",
+        "price": 800,
+        "category": ""
+    },
+    {
+        "sku": "sku1001",
+        "name": "Brown suger 1kg",
+        "price": 1400,
+        "category": ""
+    }
+]
