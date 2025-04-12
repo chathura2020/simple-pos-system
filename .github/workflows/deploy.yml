@@ -1,0 +1,85 @@
+name: Deploy PHP POS to aaPanel
+
+# Controls when the action will run.
+# Triggers the workflow on push events but only for the main branch.
+on:
+  push:
+    branches: [ main ] # Adjust if you use a different deployment branch (e.g., master)
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "deploy"
+  deploy:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # 1. Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Setup SSH Agent for secure connection
+      # Uses webfactory/ssh-agent to handle the SSH key securely
+      - name: Setup SSH Key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }} # Load private key from GitHub Secrets
+
+      # 3. Add SSH server host key to known_hosts (Recommended for security)
+      # Prevents interactive confirmation prompt. Replace 'your_server_ip' or use secrets.SERVER_IP
+      # You can get the host key by running `ssh-keyscan YOUR_SERVER_IP` on your local machine
+      # Store the full output line (including IP/hostname) in secrets.SERVER_HOST_KEY
+      # OR (less secure) skip this step and add `-o StrictHostKeyChecking=no` to rsync/ssh commands below.
+      - name: Add Server Host Key to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+          # If you stored the full key line in secrets, use this instead:
+          # echo "${{ secrets.SERVER_HOST_KEY }}" >> ~/.ssh/known_hosts
+
+
+      # 4. Deploy files using rsync over SSH
+      - name: Deploy files via rsync
+        run: |
+          rsync -avz --delete \
+          --exclude='.git/' \
+          --exclude='.github/' \
+          --exclude='deploy.yml' \
+          --exclude='.env' \
+          --exclude='/data/sales_*.json' \ # Exclude dynamically generated sales files
+          ./ ${{ secrets.SSH_USERNAME }}@${{ secrets.SERVER_IP }}:${{ secrets.DEPLOY_PATH }}
+
+      # 5. Set permissions on the server
+      # Connects via SSH using the key setup in step 2
+      - name: Set directory permissions and ownership
+        run: |
+          ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SERVER_IP }} << 'EOF'
+            # Adjust 'www:www' if your aaPanel PHP site runs as a different user/group
+            # Common aaPanel user is 'www'
+            sudo chown -R www:www ${{ secrets.DEPLOY_PATH }}
+
+            # Set standard directory/file permissions
+            sudo find ${{ secrets.DEPLOY_PATH }} -type d -exec chmod 755 {} \;
+            sudo find ${{ secrets.DEPLOY_PATH }} -type f -exec chmod 644 {} \;
+
+            # Specifically make the 'data' directory writable by the web server group
+            # This allows PHP to write products.json (if managed via POS) and sales files
+            if [ -d "${{ secrets.DEPLOY_PATH }}/data" ]; then
+              sudo chmod -R 775 ${{ secrets.DEPLOY_PATH }}/data
+              # Ensure group ownership allows writing (already set by chown above)
+              echo "Data directory permissions set."
+            else
+              echo "Data directory not found, skipping specific permissions."
+            fi
+
+            # Optional: Clear PHP OPcache if needed (requires cachetool or similar setup)
+            # Example using cachetool (if installed and configured):
+            # cachetool opcache:reset --fcgi=/var/run/php/php8.1-fpm.sock || echo "OPcache reset failed or not configured."
+
+            echo "Permissions set successfully."
+          EOF
+
+      # 6. Deployment complete message
+      - name: Deployment successful
+        run: echo "Deployment to ${{ secrets.SERVER_IP }} completed successfully."
