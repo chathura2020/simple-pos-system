@@ -42,10 +42,10 @@ jobs:
       - name: Deploy files via rsync
         run: |
           rsync -avz --delete \
-          --exclude='/git/' \
-          --exclude='/github/' \
+          --exclude='.git/' \
+          --exclude='.github/' \
           --exclude='deploy.yml' \
-          --exclude='/env' \
+          --exclude='.env' \
           --exclude='/data/sales_*.json' \  
           ./ ${{ secrets.SSH_USERNAME }}@${{ secrets.SERVER_IP }}:${{ secrets.DEPLOY_PATH }}
 
