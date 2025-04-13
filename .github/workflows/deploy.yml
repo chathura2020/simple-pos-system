@@ -47,7 +47,7 @@ jobs:
           --exclude='deploy.yml' \
           --exclude='/env' \
           --exclude='/data/sales_*.json' \  
-            ../ ${{ secrets.SSH_USERNAME }}@${{ secrets.SERVER_IP }}:${{ secrets.DEPLOY_PATH }}
+            ./${{ secrets.SSH_USERNAME }}@${{ secrets.SERVER_IP }}:${{ secrets.DEPLOY_PATH }}
 
       # 5. Set permissions on the server
       # Connects via SSH using the key setup in step 2
