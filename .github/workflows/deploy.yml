@@ -41,7 +41,7 @@ jobs:
       # 4. Deploy files using rsync over SSH
       - name: Deploy files via rsync
         run: |
-          rsync -avz --delete \ 
+          rsync -avz \
           ./ ${{ secrets.SSH_USERNAME }}@${{ secrets.SERVER_IP }}:${{ secrets.DEPLOY_PATH }}
 
       # 5. Set permissions on the server
