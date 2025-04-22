@@ -37,7 +37,7 @@ define('SALES_FILE_PATTERN', DATA_PATH . '/sales_%s.json'); // %s will be replac
 // --- Currency ---
 
 // Define the currency symbol to use
-define('CURRENCY_SYMBOL', '$'); // Change to your local currency (e.g., '£', '€', '₹', 'LKR')
+define('CURRENCY_SYMBOL', 'Rs'); // Change to your local currency (e.g., '£', '€', '₹', 'LKR')
 
 // --- Tax ---
 
