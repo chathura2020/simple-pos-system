@@ -8,7 +8,7 @@
 // --- Basic Settings ---
 
 // Shop Name displayed on receipts etc.
-define('SHOP_NAME', 'Chathura\'s Grocery');
+define('SHOP_NAME', 'FoodFactory');
 
 // --- Data Storage ---
 

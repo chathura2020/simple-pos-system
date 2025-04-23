@@ -42,6 +42,12 @@ jobs:
       - name: Deploy files via rsync
         run: |
           rsync -avz --delete \
+          --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='deploy.yml' \
+            --exclude='.env' \
+            --exclude='/data/sales_*.json' \
+            --exclude='.user.ini' \
           ./ ${{ secrets.SSH_USERNAME }}@${{ secrets.SERVER_IP }}:${{ secrets.DEPLOY_PATH }}
 
       # 5. Set permissions on the server
